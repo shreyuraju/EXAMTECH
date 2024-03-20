@@ -28,9 +28,15 @@ def top():
 #     file = os.path(app.config['UPLOAD_FOLDER'])
 #     return render_template('left.html', files = file)
 
+
+
 @app.route('/left')
 def left():
-    pdf_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith('.pdf')]
+    try:
+        pdf_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith('.pdf')]
+    except FileNotFoundError:
+        pdf_files = []
+        # abort(404)
     return render_template('left.html', pdf_files=pdf_files)
 
 @app.route('/right')
@@ -71,6 +77,7 @@ def upload_file():
             file.filename = temp_name+"."+type
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
             flash('File Uploaded Successfully')
             return redirect(url_for('top'))
            
