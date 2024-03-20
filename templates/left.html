@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right Section</title>
+</head>
+
+<body>
+    {% for pdf_file in pdf_files %}
+    <li>
+        <iframe src="{{ url_for('static', filename=pdf_file) }}" width="100%" height="1080px"></iframe>
+    </li>
+{% endfor %}
+</body>
+
+</html>

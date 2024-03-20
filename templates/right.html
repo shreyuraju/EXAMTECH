@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Left Section</title>
+    <style>
+        /* Define styles for the textarea */
+        #question {
+            width: 600px; /* Adjust the width as needed */
+            height: 100px; /* Adjust the height as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Textarea for question -->
+    <textarea id="question" name="question" placeholder="Question"
+        onkeyup="displayValue('question', 'display_question')"></textarea><br />
+    <!-- Input fields for options -->
+    <input type="text" id="option1" name="option1" placeholder="Option 1"
+        onkeyup="displayValue('option1', 'display_option1')" /><br />
+    <input type="text" id="option2" name="option2" placeholder="Option 2"
+        onkeyup="displayValue('option2', 'display_option2')" /><br />
+    <input type="text" id="option3" name="option3" placeholder="Option 3"
+        onkeyup="displayValue('option3', 'display_option3')" /><br />
+    <input type="text" id="option4" name="option4" placeholder="Option 4"
+        onkeyup="displayValue('option4', 'display_option4')" /><br />
+    <!-- Input field for answer -->
+    <input type="text" id="answer" name="answer" placeholder="Answer"
+        onkeyup="displayValue('answer', 'display_answer')" /><br />
+    <!-- Divs to display dynamically entered values -->
+    <span>Question :</span>
+    <div id="display_question"></div>
+    <span>Option 1 :</span>
+    <div id="display_option1"></div>
+    <span>Option 2 :</span>
+    <div id="display_option2"></div>
+    <span>Option 3 :</span>
+    <div id="display_option3"></div>
+    <span>Option 4 :</span>
+    <div id="display_option4"></div>
+    <span>Answer :</span>
+    <div id="display_answer"></div>
+    <!-- Add more input tags as needed -->
+
+    <script>
+        function displayValue(inputId, displayId) {
+            var inputValue = document.getElementById(inputId).value;
+            document.getElementById(displayId).innerText = inputValue;
+        }
+    </script>
+</body>
+
+</html>
