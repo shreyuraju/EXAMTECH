@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'static'
 # ALLOWED_EXTENSIONS = {'pdf','png','jpg', 'jpeg'}
 ALLOWED_EXTENSIONS = {'pdf'}
-PDF_FILE_NAME = "temp.pdf"
+FILE_NAME = "temp.pdf"
 
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -20,8 +20,11 @@ def index():
 
 @app.route('/top')
 def top():
-    file_exists = os.path.exists(os.path.join(UPLOAD_FOLDER, PDF_FILE_NAME))
-    return render_template('top.html', file_exists=file_exists, filename=PDF_FILE_NAME)
+    file_exists = os.path.exists(os.path.join(UPLOAD_FOLDER, FILE_NAME))
+    if file_exists:
+        return render_template('top.html', file_exists=file_exists, filename=FILE_NAME)
+    else:
+        return render_template('top.html', file_exists=False)
 
 @app.route('/left')
 def left():
@@ -34,11 +37,15 @@ def left():
 
 @app.route('/right')
 def right():
-    pdf_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith('.pdf')]
-    if pdf_files:
-        return render_template('right.html' , pdf_files=pdf_files)
-    else:
-        return render_template('right.html' , pdf_files=pdf_files)
+    try:
+        pdf_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith('.pdf')]
+        if pdf_files:
+            return render_template('right.html' , pdf_files=pdf_files)
+        else:
+            return render_template('right.html' , pdf_files=pdf_files)
+    except FileNotFoundError:
+        pdf_files = []
+    
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -79,14 +86,14 @@ def upload_file():
             if not os.path.exists(UPLOAD_FOLDER):
                 os.mkdir(UPLOAD_FOLDER)
                 
-            # temp_name= "temp"
-            # type = file.content_type
-            # type = type[-3:]
-            # print(type)
+            temp_name= "temp"
+            type = file.content_type
+            type = type[-3:]
+            print(type)
             
-            # file.filename = temp_name+"."+type
+            FILE_NAME = temp_name+"."+type
             
-            file.filename = PDF_FILE_NAME
+            file.filename = FILE_NAME
             
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
