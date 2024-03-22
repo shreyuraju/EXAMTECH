@@ -40,7 +40,7 @@
         <input type="text" id="option4" name="option4" placeholder="Option 4"
             onkeyup="displayValue('option4', 'display_option4')" required /><br />
 
-        <select id="answer" name="answer" required>
+        <select id="answer" name="answer" onchange="displayValue('answer', 'display_answer')" required>
             <option value="">Select Answer</option>
         </select>
         <br />
@@ -73,7 +73,6 @@
     <!-- Add more input tags as needed -->
 
     <script>
-
         function displayValue(inputId, displayId) {
             var inputValue = document.getElementById(inputId).value;
             document.getElementById(displayId).innerText = inputValue;
