@@ -9,11 +9,20 @@
 
 <body>
     <h2>File Upload</h2>
-
+    {% if file_exists %}
+    <!-- Display a button to delete the existing file -->
+    <form action="/delete" method="post">
+        <input type="hidden" name="filename" value="{{filename}}">
+        <input type="submit" value="Delete Existing File">
+    </form>
+    {% else %}
+    <!-- Display the file upload form -->
     <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file">
         <input type="submit" value="Upload">
     </form>
+    {% endif %}
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>

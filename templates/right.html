@@ -5,31 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Left Section</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         /* Define styles for the textarea */
         #question {
-            width: 600px; /* Adjust the width as needed */
-            height: 100px; /* Adjust the height as needed */
+            width: 600px;
+            /* Adjust the width as needed */
+            height: 100px;
+            /* Adjust the height as needed */
+        }
+
+        #answerexplanation {
+            width: 600px;
+            /* Adjust the width as needed */
+            height: 100px;
+            /* Adjust the height as needed */
         }
     </style>
 </head>
 
 <body>
-    <!-- Textarea for question -->
-    <textarea id="question" name="question" placeholder="Question"
-        onkeyup="displayValue('question', 'display_question')"></textarea><br />
-    <!-- Input fields for options -->
-    <input type="text" id="option1" name="option1" placeholder="Option 1"
-        onkeyup="displayValue('option1', 'display_option1')" /><br />
-    <input type="text" id="option2" name="option2" placeholder="Option 2"
-        onkeyup="displayValue('option2', 'display_option2')" /><br />
-    <input type="text" id="option3" name="option3" placeholder="Option 3"
-        onkeyup="displayValue('option3', 'display_option3')" /><br />
-    <input type="text" id="option4" name="option4" placeholder="Option 4"
-        onkeyup="displayValue('option4', 'display_option4')" /><br />
-    <!-- Input field for answer -->
-    <input type="text" id="answer" name="answer" placeholder="Answer"
-        onkeyup="displayValue('answer', 'display_answer')" /><br />
+    <form action="/savetodb" method="post">
+        <!-- Textarea for question -->
+        <textarea id="question" name="question" placeholder="Question"
+            onkeyup="displayValue('question', 'display_question')"></textarea><br />
+        <!-- Input fields for options -->
+        <input type="text" id="option1" name="option1" placeholder="Option 1"
+            onkeyup="displayValue('option1', 'display_option1')" required /><br />
+        <input type="text" id="option2" name="option2" placeholder="Option 2"
+            onkeyup="displayValue('option2', 'display_option2')" required /><br />
+        <input type="text" id="option3" name="option3" placeholder="Option 3"
+            onkeyup="displayValue('option3', 'display_option3')" required /><br />
+        <input type="text" id="option4" name="option4" placeholder="Option 4"
+            onkeyup="displayValue('option4', 'display_option4')" required /><br />
+
+        <select id="answer" name="answer" required>
+            <option value="">Select Answer</option>
+        </select>
+        <br />
+        <!-- Input field for answer -->
+        <textarea id="answerexplanation" name="answerexplanation" placeholder="Answer Explanation"
+            onkeyup="displayValue('answerexplanation', 'display_answerexplanation')" required></textarea><br />
+        <input type="submit" value="save">
+    </form>
     <!-- Divs to display dynamically entered values -->
     <span>Question :</span>
     <div id="display_question"></div>
@@ -43,13 +62,83 @@
     <div id="display_option4"></div>
     <span>Answer :</span>
     <div id="display_answer"></div>
+    <span>Answer Explanation :</span>
+    <div id="display_answerexplanation" onchange="displayAnswerExplanation()"></div>
     <!-- Add more input tags as needed -->
 
     <script>
+
         function displayValue(inputId, displayId) {
             var inputValue = document.getElementById(inputId).value;
             document.getElementById(displayId).innerText = inputValue;
+            updateSelectOptions(inputId)
         }
+
+        function updateSelectOptions(inputId) {
+            // Get input values
+            var option1 = document.getElementById("option1").value;
+            var option2 = document.getElementById("option2").value;
+            var option3 = document.getElementById("option3").value;
+            var option4 = document.getElementById("option4").value;
+
+            // Get the select element
+            var selectElement = document.getElementById("answer");
+
+            // Remove existing options
+            selectElement.innerHTML = '<option value="">Select Answer</option>';
+
+            // Add options based on input values
+            if (option1.trim() !== "") {
+                var option = document.createElement("option");
+                option.text = option1;
+                option.value = option1;
+                selectElement.add(option);
+            }
+            if (option2.trim() !== "") {
+                var option = document.createElement("option");
+                option.text = option2;
+                option.value = option2;
+                selectElement.add(option);
+            }
+            if (option3.trim() !== "") {
+                var option = document.createElement("option");
+                option.text = option3;
+                option.value = option3;
+                selectElement.add(option);
+            }
+            if (option4.trim() !== "") {
+                var option = document.createElement("option");
+                option.text = option4;
+                option.value = option4;
+                selectElement.add(option);
+            }
+        }
+    </script>
+    <script>
+        function displayAnswerExplanation() {
+            var latexExpression = document.getElementById("answerexplanation").value;
+
+            // Render the LaTeX expression inside the div
+            renderLatexInDiv(latexExpression, 'display_answerexplanation');
+        }
+        // Function to render LaTeX expression using MathJax
+        function renderLatexInDiv(latexCode, divId) {
+            // Get the div element
+            var displayDiv = document.getElementById(divId);
+
+            // Render the LaTeX code inside the div
+            MathJax.tex2chtmlPromise(latexCode)
+                .then(function (node) {
+                    displayDiv.innerHTML = '';
+                    displayDiv.appendChild(node);
+                    return MathJax.startup.promise;
+                })
+                .catch(function (err) {
+                    displayDiv.innerHTML = 'Error rendering LaTeX: ' + err.message;
+                });
+        }
+
+
     </script>
 </body>
 

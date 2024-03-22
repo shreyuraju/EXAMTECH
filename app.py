@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'static'
 # ALLOWED_EXTENSIONS = {'pdf','png','jpg', 'jpeg'}
 ALLOWED_EXTENSIONS = {'pdf'}
+PDF_FILE_NAME = "temp.pdf"
 
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -21,7 +22,8 @@ def index():
 
 @app.route('/top')
 def top():
-    return render_template('top.html')
+    file_exists = os.path.exists(os.path.join(UPLOAD_FOLDER, PDF_FILE_NAME))
+    return render_template('top.html', file_exists=file_exists, filename=PDF_FILE_NAME)
 
 # @app.route('/left')
 # def left():
@@ -46,9 +48,21 @@ def right():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# @app.route('/upload/<filename>')
-# def upload(filename):
-#     return send_from_directory(app.config['UPLOAD_PATH'], filename)
+@app.route('/savetodb', methods=['GET','POST'])
+def savetodb(data):
+    return True
+
+@app.route('/delete', methods=['POST'])
+def delete_file():
+    if request.method == 'POST':
+        filename = request.form['filename']
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            flash('File deleted successfully')
+        else:
+            flash('File does not exist')
+    return redirect(url_for('top'))
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -70,11 +84,15 @@ def upload_file():
             if not os.path.exists(UPLOAD_FOLDER):
                 os.mkdir(UPLOAD_FOLDER)
                 
-            temp_name= "temp"
-            type = file.content_type
-            type = type[-3:]
-            print(type)
-            file.filename = temp_name+"."+type
+            # temp_name= "temp"
+            # type = file.content_type
+            # type = type[-3:]
+            # print(type)
+            
+            # file.filename = temp_name+"."+type
+            
+            file.filename = PDF_FILE_NAME
+            
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             

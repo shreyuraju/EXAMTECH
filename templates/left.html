@@ -10,9 +10,7 @@
 
 <body>
     {% for pdf_file in pdf_files %}
-    <li>
         <iframe src="{{ url_for('static', filename=pdf_file) }}" width="100%" height="1080px"></iframe>
-    </li>
     {% endfor %}
 </body>
 
