@@ -16,21 +16,12 @@ app.secret_key = 'your_secret_key'
 #index
 @app.route('/')
 def index():
-    # if not os.path.exists(UPLOAD_FOLDER):
-    #     os.mkdir(UPLOAD_FOLDER)
     return render_template('index.html')
 
 @app.route('/top')
 def top():
     file_exists = os.path.exists(os.path.join(UPLOAD_FOLDER, PDF_FILE_NAME))
     return render_template('top.html', file_exists=file_exists, filename=PDF_FILE_NAME)
-
-# @app.route('/left')
-# def left():
-#     file = os.path(app.config['UPLOAD_FOLDER'])
-#     return render_template('left.html', files = file)
-
-
 
 @app.route('/left')
 def left():
@@ -43,7 +34,11 @@ def left():
 
 @app.route('/right')
 def right():
-    return render_template('right.html')
+    pdf_files = [file for file in os.listdir(app.config['UPLOAD_FOLDER']) if file.endswith('.pdf')]
+    if pdf_files:
+        return render_template('right.html' , pdf_files=pdf_files)
+    else:
+        return render_template('right.html' , pdf_files=pdf_files)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

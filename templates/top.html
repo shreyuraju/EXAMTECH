@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +12,7 @@
     <!-- Display a button to delete the existing file -->
     <form action="/delete" method="post">
         <input type="hidden" name="filename" value="{{filename}}">
-        <input type="submit" value="Delete Existing File">
+        <input type="submit" value="Delete Existing File" onclick="alert('Do you want to delete file')">
     </form>
     {% else %}
     <!-- Display the file upload form -->

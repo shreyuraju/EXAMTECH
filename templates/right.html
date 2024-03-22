@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,6 +25,7 @@
 </head>
 
 <body>
+    {% if pdf_files %}
     <form action="/savetodb" method="post">
         <!-- Textarea for question -->
         <textarea id="question" name="question" placeholder="Question"
@@ -64,6 +64,12 @@
     <div id="display_answer"></div>
     <span>Answer Explanation :</span>
     <div id="display_answerexplanation" onchange="displayAnswerExplanation()"></div>
+    {%else %}
+    <ul>
+            <li>No File Exist</li>
+    </ul>
+    {% endif %}
+
     <!-- Add more input tags as needed -->
 
     <script>
@@ -115,11 +121,24 @@
         }
     </script>
     <script>
+        function latextostring(string) {
+            // Remove $$ from the LaTeX expression
+            var cleanedExpression = string.replace(/\$\$/g, "");
+
+            // Convert the LaTeX array code to string
+            var latexString = cleanedExpression
+                .replace(/\\\\/g, "\n") // Replace \\ with newline character
+                .replace(/{/g, "") // Remove {
+                .replace(/}/g, "") // Remove }
+                .trim(); // Trim leading and trailing whitespace
+
+            console.log(latexString);
+        }
         function displayAnswerExplanation() {
             var latexExpression = document.getElementById("answerexplanation").value;
-
+            var cleanedExpression = latextostring(latexExpression)
             // Render the LaTeX expression inside the div
-            renderLatexInDiv(latexExpression, 'display_answerexplanation');
+            renderLatexInDiv(cleanedExpression, 'display_answerexplanation');
         }
         // Function to render LaTeX expression using MathJax
         function renderLatexInDiv(latexCode, divId) {
@@ -137,8 +156,6 @@
                     displayDiv.innerHTML = 'Error rendering LaTeX: ' + err.message;
                 });
         }
-
-
     </script>
 </body>
 
